@@ -84,3 +84,5 @@ jobs:
         echo '  make bootstrap'
         echo '  make release'
         exit 1
+
+        
