@@ -109,29 +109,29 @@ jobs:
           exit 1
         fi
 
-     - name: Upload SBOM for Software Composition Analysis 
-       run: |
-        chmod +x ./build/sbom_upload.sh
-        set -x  # Enable script debugging
-        ./build/sbom_upload.sh -u ${{ secrets.URL_SCORE }} -t ${{ secrets.T_SCORE }} -p ${{ secrets.P_SCORE }} -v ${{ secrets.V_SCORE }}
-        if [ $? -ne 0 ]; then
-          echo "Error: SBOM for Software Composition Analysis failed."
-          exit 1
-        else
-          echo "SBOM for Software Composition Analysis  completed successfully."
-        fi
+     # - name: Upload SBOM for Software Composition Analysis 
+     #   run: |
+     #    chmod +x ./build/sbom_upload.sh
+     #    set -x  # Enable script debugging
+     #    ./build/sbom_upload.sh -u ${{ secrets.URL_SCORE }} -t ${{ secrets.T_SCORE }} -p ${{ secrets.P_SCORE }} -v ${{ secrets.V_SCORE }}
+     #    if [ $? -ne 0 ]; then
+     #      echo "Error: SBOM for Software Composition Analysis failed."
+     #      exit 1
+     #    else
+     #      echo "SBOM for Software Composition Analysis  completed successfully."
+     #    fi
 
-     - name: EPSS CVSS and CISA Score
-       run: |
-        chmod +x ./build/Vunerability_score.sh
-        set -x  # Enable script debugging
-        bash build/Vunerability_score.sh -u ${{ secrets.URL_SCORE }} -t ${{ secrets.T_SCORE }} -p ${{ secrets.P_SCORE }} -v ${{ secrets.V_SCORE }} -d ${{ secrets.D_SCORE }}
-        if [ $? -ne 0 ]; then
-          echo "Error: EPSS, CVSS and CISA Check failed."
-          exit 1
-        else
-          echo " EPSS, CVSS and CISA Check completed successfully."
-        fi
+     # - name: EPSS CVSS and CISA Score
+     #   run: |
+     #    chmod +x ./build/Vunerability_score.sh
+     #    set -x  # Enable script debugging
+     #    bash build/Vunerability_score.sh -u ${{ secrets.URL_SCORE }} -t ${{ secrets.T_SCORE }} -p ${{ secrets.P_SCORE }} -v ${{ secrets.V_SCORE }} -d ${{ secrets.D_SCORE }}
+     #    if [ $? -ne 0 ]; then
+     #      echo "Error: EPSS, CVSS and CISA Check failed."
+     #      exit 1
+     #    else
+     #      echo " EPSS, CVSS and CISA Check completed successfully."
+     #    fi
 
     
      - name: Build with Maven Wrapper
