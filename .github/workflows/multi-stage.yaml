@@ -1,10 +1,10 @@
 name: DevSecOps_Pipeline_Multistagee
 
-# on:
-#   push:
-#     branches:
-#       - test
-#   workflow_dispatch:
+on:
+  push:
+    branches:
+      - test
+  workflow_dispatch:
 
 env:
   SBOM_FILE: sbom.json # Defines the name of the Software Bill of Materials (SBOM) file (sbom.json) to be generated or used.
@@ -467,24 +467,23 @@ jobs:
             exit 1
           fi
 
-     # - name: Apply Kyverno Policy
-     #   run: |
-     #    echo "Applying Kyverno policy..."
-     #    kubectl apply -f Kyverno/Kyverno-Policy.yaml
-     #    if [ $? -eq 0 ]; then
-     #      echo "Kyverno policy applied successfully."
-     #    else
-     #      echo "Error applying Kyverno policy."
-     #      exit 1
-     #    fi
-
-     
      - name: Apply Kyverno Policy
-       uses: DHEEMAN2912/spring-petclinic/.github/workflows/kyverno.yaml@test  # Fully qualified path
-       with:
-          cluster_name: "${{ secrets.CLUSTER_NAME }}"
-
+       run: |
+          echo "Starting Kyverno policy application..."
     
+          # Set the Kyverno policy file or URL in a variable for easy reuse
+          POLICY_FILE="Kyverno/Kyverno-Policy.yaml"
+    
+          # Exit immediately if any command fails
+          set -e
+          set -o pipefail
+
+          # Applying the Kyverno policy
+          echo "Applying policy from file: $POLICY_FILE"
+          kubectl apply -f $POLICY_FILE
+    
+          echo "Kyverno policy applied successfully."
+
               
      - name: Deploy to AKS using Helm
        run: |
