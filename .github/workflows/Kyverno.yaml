@@ -1,5 +1,6 @@
 name: Apply Kyverno Policy
 
+
 on:
   workflow_call:
     inputs:
