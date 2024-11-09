@@ -11,5 +11,5 @@ jobs:
   call-template:
     uses: DHEEMAN2912/Template-Repo/.github/workflows/template1.yaml@main
     with:
-      example_input: 'Hello from my-project!'
+      example_input: 'Hello World!'
       
