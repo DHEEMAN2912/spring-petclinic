@@ -468,42 +468,10 @@ jobs:
         fi
 
   apply_kyverno_policy:
-   needs: Verify-the-AKS-Cluster  # Ensure this job runs after Verify-the-AKS-Cluster
-   runs-on: ubuntu-22.04  # Define a runner
-   container:
-    image: "dheeman29/agent-image@sha256:02612f90f96caf5c8d7eebf1cbb5513c281362ee7893393fad366fe4580ee4ed"
-
-   permissions:
-    security-events: write
-    id-token: write
-    contents: read
-    attestations: write
-    packages: write
-    
-   steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-    
-    - name: Install Necessary Tools and Dependencies
-      id: install_tools_and_dependencies
-      run: |
-        chmod +x ./install_dependencies/install_tools.sh
-    
-        echo "Starting tool installation..."
-        {
-          ./install_dependencies/install_tools.sh
-        } || {
-          echo "Error: Tool installation failed."
-          exit 1
-        }
-        
-        echo "Tool installation completed successfully."
-
-    - name: Apply Kyverno Policy
-      uses: DHEEMAN2912/spring-petclinic/.github/workflows/kyverno.yaml@test  # Correctly call reusable workflow
-      with:
-        cluster_name: "${{ secrets.CLUSTER_NAME }}"
-
+    needs: Verify-the-AKS-Cluster  # Ensure this job runs after Verify-the-AKS-Cluster
+    uses: DHEEMAN2912/spring-petclinic/.github/workflows/kyverno.yaml@test  # Correctly call reusable workflow
+    with:
+      cluster_name: "${{ secrets.CLUSTER_NAME }}"
 
   deploy_to_aks:
    needs: apply_kyverno_policy  # Ensure this runs after applying Kyverno policy
