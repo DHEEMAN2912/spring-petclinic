@@ -482,9 +482,16 @@ jobs:
      - name: Trigger Kyverno Policy Workflow
        run: |
         echo "Triggering Kyverno Policy Workflow..."
-        curl -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/Kyverno.yaml/dispatches \
+        response=$(curl -s -w "%{http_code}" -o /dev/null -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/Kyverno.yaml/dispatches \
           -H "Authorization: Bearer ${{ secrets.CR_PASSWORD }}" \
-          -d '{"ref":"test"}'
+          -d '{"ref":"test"}')
+        
+        if [ "$response" -eq 200 ] || [ "$response" -eq 201 ]; then
+          echo "Kyverno Policy Workflow triggered successfully!"
+        else
+          echo "Failed to trigger Kyverno Policy Workflow. HTTP Status: $response"
+          exit 1
+        fi
 
     
               
