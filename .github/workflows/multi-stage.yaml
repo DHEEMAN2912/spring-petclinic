@@ -479,9 +479,10 @@ jobs:
      #    fi
 
      
-     - name: Trigger Kyverno Policy Workflow
-       run: |
-          uses: DHEEMAN2912/spring-petclinic/.github/workflows/Kyverno.yaml@test
+     - name: Apply Kyverno Policy
+       uses: ./.github/workflows/kyverno.yaml
+       with:
+          cluster_name: "${{ secrets.CLUSTER_NAME }}"
 
     
               
