@@ -467,14 +467,17 @@ jobs:
           exit 1
         fi
 
-  apply_kyverno_policy:
-    needs: Verify-the-AKS-Cluster  # Ensure this job runs after Verify-the-AKS-Cluster
-    uses: DHEEMAN2912/spring-petclinic/.github/workflows/kyverno.yaml@test  # Correctly call reusable workflow
-    with:
-      cluster_name: "${{ secrets.CLUSTER_NAME }}"
 
-  deploy_to_aks:
-   needs: apply_kyverno_policy  # Ensure this runs after applying Kyverno policy
+    - name: Apply Kyverno Policy
+      env:
+        CLUSTER_NAME: "${{ secrets.CLUSTER_NAME }}"
+      run: |
+        # Ensure Kubernetes context is set before applying policy
+        kubectl config use-context $CLUSTER_NAME
+        kubectl apply -f https://github.com/DHEEMAN2912/spring-petclinic/Kyverno/Kyverno-Policy.yaml
+
+
+  deploy_to_aks:  
    runs-on: ubuntu-22.04
    container:
     image: "dheeman29/agent-image@sha256:02612f90f96caf5c8d7eebf1cbb5513c281362ee7893393fad366fe4580ee4ed"
