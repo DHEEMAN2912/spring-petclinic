@@ -1,40 +1,24 @@
-name: Apply Kyverno Policy
-
+# kyverno.yaml
+name: Kyverno Policy Deployment
 
 on:
   workflow_call:
     inputs:
-      ref:
-        description: 'Branch to trigger the workflow from'
+      cluster_name:
         required: true
         type: string
-        default: 'test'  # Default branch, can be overridden when triggering
-  workflow_dispatch:  # Manual trigger option
 
 jobs:
-  apply-kyverno-policy:
+  apply_kyverno_policy:
     runs-on: ubuntu-latest
-    container:
-      image: "dheeman29/agent-image@sha256:02612f90f96caf5c8d7eebf1cbb5513c281362ee7893393fad366fe4580ee4ed"
-      
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-     
-      - name:  Install kubectl
-          echo "Installing kubectl..."
-          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-          install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-          rm kubectl  # Clean up after installation
-
       - name: Apply Kyverno Policy
+        env:
+          CLUSTER_NAME: ${{ inputs.cluster_name }}
         run: |
-          echo "Applying Kyverno policy..."
-          kubectl apply -f Kyverno/Kyverno-Policy.yaml
-          if [ $? -eq 0 ]; then
-            echo "Kyverno policy applied successfully."
-          else
-            echo "Error applying Kyverno policy."
-            exit 1
-          fi
+          # Ensure Kubernetes context is set before applying policy
+          kubectl config use-context $CLUSTER_NAME
+          kubectl apply -f https://github.com/DHEEMAN2912/spring-petclinic/Kyverno/Kyverno-Policy.yaml
