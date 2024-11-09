@@ -1,34 +1,34 @@
-# # .github/workflows/Kyverno.yaml
+# .github/workflows/Kyverno.yaml
 
-# name: Apply Kyverno Policy
+name: Apply Kyverno Policy
 
-# on:
-#   workflow_call:
-#     inputs:
-#       ref:
-#         description: 'Branch to trigger the workflow from'
-#         required: true
-#         type: string
-#         default: 'test'  # Default value for the input
-#   workflow_dispatch:  # Add this line to enable manual trigger
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: 'Branch to trigger the workflow from'
+        required: true
+        type: string
+        default: 'test'  # Default value for the input
+  workflow_dispatch:  # Add this line to enable manual trigger
 
-# jobs:
-#   apply-kyverno-policy:
-#     runs-on: ubuntu-latest
-#     container:
-#       image: "dheeman29/agent-image@sha256:02612f90f96caf5c8d7eebf1cbb5513c281362ee7893393fad366fe4580ee4ed"
+jobs:
+  apply-kyverno-policy:
+    runs-on: ubuntu-latest
+    container:
+      image: "dheeman29/agent-image@sha256:02612f90f96caf5c8d7eebf1cbb5513c281362ee7893393fad366fe4580ee4ed"
       
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-#       - name: Apply Kyverno Policy
-#         run: |
-#           echo "Applying Kyverno policy..."
-#           kubectl apply -f Kyverno/Kyverno-Policy.yaml
-#           if [ $? -eq 0 ]; then
-#             echo "Kyverno policy applied successfully."
-#           else
-#             echo "Error applying Kyverno policy."
-#             exit 1
-#           fi
+      - name: Apply Kyverno Policy
+        run: |
+          echo "Applying Kyverno policy..."
+          kubectl apply -f Kyverno/Kyverno-Policy.yaml
+          if [ $? -eq 0 ]; then
+            echo "Kyverno policy applied successfully."
+          else
+            echo "Error applying Kyverno policy."
+            exit 1
+          fi
