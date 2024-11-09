@@ -1,5 +1,3 @@
-# .github/workflows/Kyverno.yaml
-
 name: Apply Kyverno Policy
 
 on:
@@ -9,8 +7,8 @@ on:
         description: 'Branch to trigger the workflow from'
         required: true
         type: string
-        default: 'test'  # Default value for the input
-  workflow_dispatch:  # Add this line to enable manual trigger
+        default: 'test'  # Default branch, can be overridden when triggering
+  workflow_dispatch:  # Manual trigger option
 
 jobs:
   apply-kyverno-policy:
