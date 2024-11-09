@@ -469,7 +469,7 @@ jobs:
 
   apply_kyverno_policy:
     needs: Verify-the-AKS-Cluster  # Ensure this job runs after Verify-the-AKS-Cluster
-    uses: DHEEMAN2912/spring-petclinic/.github/workflows/kyverno.yaml@test  # Correctly call reusable workflow
+    uses: ./.github/workflows/kyverno.yaml  # Correctly call reusable workflow
     with:
       cluster_name: "${{ secrets.CLUSTER_NAME }}"
 
