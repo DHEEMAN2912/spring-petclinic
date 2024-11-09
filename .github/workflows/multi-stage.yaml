@@ -480,7 +480,7 @@ jobs:
 
      
      - name: Apply Kyverno Policy
-       uses: ./.github/workflows/kyverno.yaml
+       uses: DHEEMAN2912/spring-petclinic/.github/workflows/kyverno.yaml@test  # Fully qualified path
        with:
           cluster_name: "${{ secrets.CLUSTER_NAME }}"
 
