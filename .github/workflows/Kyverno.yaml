@@ -20,6 +20,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+     
+      - name:  Install kubectl
+          echo "Installing kubectl..."
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          rm kubectl  # Clean up after installation
+
       - name: Apply Kyverno Policy
         run: |
           echo "Applying Kyverno policy..."
