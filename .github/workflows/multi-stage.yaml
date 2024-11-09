@@ -1,10 +1,10 @@
 name: DevSecOps_Pipeline_Multistagee
 
-# on:
-#   push:
-#     branches:
-#       - test
-#   workflow_dispatch:
+on:
+  push:
+    branches:
+      - test
+  workflow_dispatch:
 
 env:
   SBOM_FILE: sbom.json # Defines the name of the Software Bill of Materials (SBOM) file (sbom.json) to be generated or used.
@@ -479,17 +479,14 @@ jobs:
      #    fi
 
      
-     # - name: Trigger Kyverno Policy Workflow
-     #   run: |
-     #    echo "Triggering Kyverno Policy Workflow..."
-     #    curl -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/Kyverno.yaml/dispatches \
-     #      -H "Authorization: Bearer ${{ secrets.CR_PASSWORD }}" \
-     #      -d '{"ref":"test"}'
-
      - name: Trigger Kyverno Policy Workflow
-       uses: ./.github/workflows/Kyverno.yaml  # Correctly reference the Kyverno workflow
-       with:
-          ref: 'test'  # Specify the branch to trigger the workflow from (test branch)
+       run: |
+        echo "Triggering Kyverno Policy Workflow..."
+        curl -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/Kyverno.yaml/dispatches \
+          -H "Authorization: Bearer ${{ secrets.CR_PASSWORD }}" \
+          -d '{"ref":"test"}'
+
+    
               
      - name: Deploy to AKS using Helm
        run: |
