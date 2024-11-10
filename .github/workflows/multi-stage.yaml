@@ -476,12 +476,10 @@ jobs:
     
           # Exit immediately if any command fails
           set -e
-         
-
+          
           # Applying the Kyverno policy
           echo "Applying policy from file: $POLICY_FILE"
           kubectl apply -f $POLICY_FILE
-    
           echo "Kyverno policy applied successfully."
 
               
