@@ -42,6 +42,8 @@ jobs:
        uses: actions/dependency-review-action@v4
        with:
          fail-on-severity: critical
+         base-ref: dt-review          ##${{ github.event.pull_request.base.ref }}  # Target branch
+         head-ref: dt-review          ##${{ github.event.pull_request.head.ref }}  # Source branch
        ##  deny-licenses: LGPL-2.0, BSD-2-Clause
      - name: 'Report'
        # make sure this step runs even if the previous failed
