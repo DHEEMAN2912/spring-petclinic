@@ -36,7 +36,31 @@ jobs:
     steps:
      - name: Checkout Code
        uses: actions/checkout@v4       
-   
+
+     - name: 'Dependency Review'
+       id: review
+       uses: actions/dependency-review-action@v4
+       with:
+         fail-on-severity: critical
+         deny-licenses: LGPL-2.0, BSD-2-Clause
+     - name: 'Report'
+       # make sure this step runs even if the previous failed
+       if: ${{ failure() && steps.review.conclusion == 'failure' }}
+       shell: bash
+       env: # store comment HTML data in an environment variable
+         COMMENT: ${{ steps.review.outputs.comment-content }}
+       run: | # do something with the comment:
+          echo "$COMMENT"
+     - name: 'List vulnerable dependencies'
+       # make sure this step runs even if the previous failed
+       if: ${{ failure() && steps.review.conclusion == 'failure' }}
+       shell: bash
+       env: # store JSON data in an environment variable
+          VULNERABLE_CHANGES: ${{ steps.review.outputs.vulnerable-changes }}
+       run: | # do something with the JSON:
+         echo "$VULNERABLE_CHANGES" | jq '.[].package_url'
+
+       
      - name: Install Necessary Tools and Dependencies
        id: install_tools_and_dependencies
        run: |
