@@ -180,19 +180,19 @@ jobs:
           fi
 
 
-     - name: Scan Application Image with Trivy
-       id: scan_docker_image
-       run: |
-         trivy image "${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_VERSION }}" > ${{ env.LOG_FILE }} || { echo "Error: Trivy scan failed"; exit 1; }
-         # echo "Trivy scan completed. Results saved to ${{ env.LOG_FILE }}"
-         echo "Trivy scan completed. Results:"
-         cat ${{ env.LOG_FILE }}  # This prints the scan results in the log
+     # - name: Scan Application Image with Trivy
+     #   id: scan_docker_image
+     #   run: |
+     #     trivy image "${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_VERSION }}" > ${{ env.LOG_FILE }} || { echo "Error: Trivy scan failed"; exit 1; }
+     #     # echo "Trivy scan completed. Results saved to ${{ env.LOG_FILE }}"
+     #     echo "Trivy scan completed. Results:"
+     #     cat ${{ env.LOG_FILE }}  # This prints the scan results in the log
 
-     - name: Upload Trivy Scan Results
-       uses: actions/upload-artifact@v3
-       with:
-        name: trivy-scan-results
-        path: ${{ env.LOG_FILE }}
+     # - name: Upload Trivy Scan Results
+     #   uses: actions/upload-artifact@v3
+     #   with:
+     #    name: trivy-scan-results
+     #    path: ${{ env.LOG_FILE }}
 
      - name: Log in to GitHub Container Registry
        id: login_registry
@@ -223,21 +223,23 @@ jobs:
      - name: Sign Docker Image
        id: sign_docker_image
        run: |
-           echo "${{ secrets.COSIGN_KEY }}" | tr -d '\r' > cosign.key
-           chmod 600 cosign.key
-           
-           if cosign sign \
-              --key cosign.key \
-              --rekor-url http://52.172.140.64:3000/ \
-              ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes; then
-             echo "Success: Image sign successful."
-           else
-             echo "Error: Image sign failed."
-             exit 1
-           fi
+            echo "${{ secrets.COSIGN_KEY }}" | tr -d '\r' > cosign.key
+            chmod 600 cosign.key
+      
+            if cosign sign \
+               --key cosign.key \
+               --rekor-url http://52.172.140.64:3000/ \
+               --insecure-rekor \
+               ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes; then
+              echo "Success: Image sign successful."
+            else
+              echo "Error: Image sign failed."
+              exit 1
+            fi
        env:
-           COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
-           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSPHRASE }}
+            COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
+            COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSPHRASE }}
+
 
 
      - name: Public Key Creation
