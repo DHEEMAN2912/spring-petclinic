@@ -229,7 +229,7 @@ jobs:
           # Set the COSIGN_REKOR_SKIP_VERIFY variable to true to bypass SSL verification
           if COSIGN_REKOR_SKIP_VERIFY=true cosign sign \
             --key cosign.key \
-            --rekor-url http://52.172.140.64:3000/ \
+            --rekor-url http://localhost:3000/ \
             ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes; then
             echo "Success: Image sign successful."
           else
