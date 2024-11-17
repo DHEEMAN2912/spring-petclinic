@@ -223,23 +223,24 @@ jobs:
      - name: Sign Docker Image
        id: sign_docker_image
        run: |
-          echo "${{ secrets.COSIGN_KEY }}" | tr -d '\r' > cosign.key
-          chmod 600 cosign.key
-      
-          # Set the COSIGN_REKOR_SKIP_VERIFY variable to true to bypass SSL verification
-          if COSIGN_REKOR_SKIP_VERIFY=true cosign sign \
-            --key cosign.key \
-            --rekor-url http://localhost:3000/ \
-            ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes; then
-            echo "Success: Image sign successful."
-          else
-            echo "Error: Image sign failed."
-            exit 1
-          fi
+        echo "${{ secrets.COSIGN_KEY }}" | tr -d '\r' > cosign.key
+        chmod 600 cosign.key
+    
+        # Sign the image and store the signature in Rekor
+        if COSIGN_REKOR_SKIP_VERIFY=true cosign sign \
+          --key cosign.key \
+          --rekor-url http://localhost:3000/ \
+          ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes; then
+          echo "Success: Image sign successful."
+        else
+          echo "Error: Image sign failed."
+          exit 1
+        fi
        env:
-          COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSPHRASE }}
-          COSIGN_REKOR_SKIP_VERIFY: true
+        COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
+        COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSPHRASE }}
+        COSIGN_REKOR_SKIP_VERIFY: true
+
 
 
 
