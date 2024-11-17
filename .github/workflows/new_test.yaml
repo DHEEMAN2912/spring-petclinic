@@ -229,7 +229,7 @@ jobs:
           # Sign the image and store the signature in Rekor
           if  cosign sign \
             --key cosign.key \
-            --rekor-url https://https://85c8-52-172-140-64.ngrok-free.app \
+            --rekor-url https://85c8-52-172-140-64.ngrok-free.app \
             ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes; then
             echo "Success: Image sign successful."
           else
@@ -326,12 +326,12 @@ jobs:
        run: |
           set -e
           echo "sbom filename:$SBOM_FILENAME"
-          cosign verify --key cosign.pub ${{ secrets.IMAGE_NAME }}:$SBOM_FILENAME --rekor-url https://https://85c8-52-172-140-64.ngrok-free.app | jq . && { echo "Success: Verification of SBOM signature succesfull"; } || { echo "Error: Verification of SBOM signature failed"; exit 1; }
+          cosign verify --key cosign.pub ${{ secrets.IMAGE_NAME }}:$SBOM_FILENAME --rekor-url https://85c8-52-172-140-64.ngrok-free.app | jq . && { echo "Success: Verification of SBOM signature succesfull"; } || { echo "Error: Verification of SBOM signature failed"; exit 1; }
 
      - name: Sign SBOM
        id: sign_sbom_blob
        run: |
-          cosign sign-blob --yes --key env://COSIGN_KEY sbom.json --bundle cosign.bundle --rekor-url https://https://85c8-52-172-140-64.ngrok-free.app 2>&1 && { echo "Success: Signing SBOM is succesfull"; } || { echo "Error: Signing SBOM failed"; exit 1; }
+          cosign sign-blob --yes --key env://COSIGN_KEY sbom.json --bundle cosign.bundle --rekor-url https://85c8-52-172-140-64.ngrok-free.app 2>&1 && { echo "Success: Signing SBOM is succesfull"; } || { echo "Error: Signing SBOM failed"; exit 1; }
        env:
           COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSPHRASE }}
@@ -400,7 +400,7 @@ jobs:
 
      - name: Attestation and Signing the Image with Provenance
        run: |
-        cosign attest --key env://COSIGN_KEY --predicate output.json --rekor-url https://https://85c8-52-172-140-64.ngrok-free.app  ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes || { echo "Error: Failed to attest predicate with the image"; exit 1; }
+        cosign attest --key env://COSIGN_KEY --predicate output.json --rekor-url https://85c8-52-172-140-64.ngrok-free.app  ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes || { echo "Error: Failed to attest predicate with the image"; exit 1; }
        shell: bash
        env:
         COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
@@ -408,7 +408,7 @@ jobs:
 
      - name: Verify Provenance Attestation 
        run: |
-        cosign verify-attestation --certificate-github-workflow-name=.github/workflows/cicd.yml@refs/heads/testing --certificate-github-workflow-ref=refs/heads/testing --certificate-github-workflow-repository=https://github.com/dheeman2912/spring-petclinic --certificate-github-workflow-trigger=push --key cosign.pub --rekor-url https://https://85c8-52-172-140-64.ngrok-free.app ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} | jq -r .payload | base64 --decode | jq . || { echo "Error: Provenance Attestation  failed"; exit 1; }
+        cosign verify-attestation --certificate-github-workflow-name=.github/workflows/cicd.yml@refs/heads/testing --certificate-github-workflow-ref=refs/heads/testing --certificate-github-workflow-repository=https://github.com/dheeman2912/spring-petclinic --certificate-github-workflow-trigger=push --key cosign.pub --rekor-url https://85c8-52-172-140-64.ngrok-free.app ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} | jq -r .payload | base64 --decode | jq . || { echo "Error: Provenance Attestation  failed"; exit 1; }
        shell: bash
 
   Image-Deploy:
