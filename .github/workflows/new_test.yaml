@@ -335,8 +335,9 @@ jobs:
        id: verify_sbom_signature
        run: |
           set -e
+          export REKOR_PUBLIC_KEY=$(cat rekor.pub)
           echo "sbom filename:$SBOM_FILENAME"
-          cosign verify --key cosign.pub --rekor-public-key rekor.pub ${{ secrets.IMAGE_NAME }}:$SBOM_FILENAME --rekor-url https://85c8-52-172-140-64.ngrok-free.app | jq . && { echo "Success: Verification of SBOM signature succesfull"; } || { echo "Error: Verification of SBOM signature failed"; exit 1; }
+          cosign verify --key cosign.pub ${{ secrets.IMAGE_NAME }}:$SBOM_FILENAME --rekor-url https://85c8-52-172-140-64.ngrok-free.app | jq . && { echo "Success: Verification of SBOM signature succesfull"; } || { echo "Error: Verification of SBOM signature failed"; exit 1; }
 
      - name: Sign SBOM
        id: sign_sbom_blob
@@ -416,10 +417,23 @@ jobs:
         COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSPHRASE }}
 
-     - name: Verify Provenance Attestation 
+     # - name: Verify Provenance Attestation 
+     #   run: |
+     #    cosign verify-attestation --certificate-github-workflow-name=.github/workflows/cicd.yml@refs/heads/testing --certificate-github-workflow-ref=refs/heads/testing --certificate-github-workflow-repository=https://github.com/dheeman2912/spring-petclinic --certificate-github-workflow-trigger=push --key cosign.pub --rekor-public-key rekor.pub --rekor-url https://85c8-52-172-140-64.ngrok-free.app ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} | jq -r .payload | base64 --decode | jq . || { echo "Error: Provenance Attestation  failed"; exit 1; }
+     #   shell: bash
+
+     - name: Verify Provenance Attestation
        run: |
-        cosign verify-attestation --certificate-github-workflow-name=.github/workflows/cicd.yml@refs/heads/testing --certificate-github-workflow-ref=refs/heads/testing --certificate-github-workflow-repository=https://github.com/dheeman2912/spring-petclinic --certificate-github-workflow-trigger=push --key cosign.pub --rekor-public-key rekor.pub --rekor-url https://85c8-52-172-140-64.ngrok-free.app ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} | jq -r .payload | base64 --decode | jq . || { echo "Error: Provenance Attestation  failed"; exit 1; }
-       shell: bash
+        export REKOR_PUBLIC_KEY=$(cat rekor.pub)
+        cosign verify-attestation \
+          --certificate-github-workflow-name=".github/workflows/cicd.yml@refs/heads/testing" \
+          --certificate-github-workflow-ref="refs/heads/testing" \
+          --certificate-github-workflow-repository="https://github.com/dheeman2912/spring-petclinic" \
+          --certificate-github-workflow-trigger="push" \
+          --key cosign.pub \
+          --rekor-url https://85c8-52-172-140-64.ngrok-free.app \
+          ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} | jq -r .payload | base64 --decode | jq .
+
 
   Image-Deploy:
     needs: Build-and-Generate-Image
