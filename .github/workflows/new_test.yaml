@@ -220,6 +220,16 @@ jobs:
           echo "IMAGE_SHA=$IMAGE_SHA" >> $GITHUB_ENV
           echo "::set-output name=image_sha::$IMAGE_SHA"
 
+     - name: Fetch Rekor Public Key
+       id: fetch_rekor_key
+       run: |
+          set -e
+          echo "Fetching Rekor public key from your custom Rekor server..."
+          REKOR_PUBLIC_KEY=$(curl -s https://85c8-52-172-140-64.ngrok-free.app/api/v1/log/publicKey)
+          echo "$REKOR_PUBLIC_KEY" > rekor.pub
+          echo "Rekor public key fetched and saved to rekor.pub"
+       shell: sh
+
      - name: Sign Docker Image
        id: sign_docker_image
        run: |
@@ -326,7 +336,7 @@ jobs:
        run: |
           set -e
           echo "sbom filename:$SBOM_FILENAME"
-          cosign verify --key cosign.pub ${{ secrets.IMAGE_NAME }}:$SBOM_FILENAME --rekor-url https://85c8-52-172-140-64.ngrok-free.app | jq . && { echo "Success: Verification of SBOM signature succesfull"; } || { echo "Error: Verification of SBOM signature failed"; exit 1; }
+          cosign verify --key cosign.pub --rekor-public-key rekor.pub ${{ secrets.IMAGE_NAME }}:$SBOM_FILENAME --rekor-url https://85c8-52-172-140-64.ngrok-free.app | jq . && { echo "Success: Verification of SBOM signature succesfull"; } || { echo "Error: Verification of SBOM signature failed"; exit 1; }
 
      - name: Sign SBOM
        id: sign_sbom_blob
@@ -408,7 +418,7 @@ jobs:
 
      - name: Verify Provenance Attestation 
        run: |
-        cosign verify-attestation --certificate-github-workflow-name=.github/workflows/cicd.yml@refs/heads/testing --certificate-github-workflow-ref=refs/heads/testing --certificate-github-workflow-repository=https://github.com/dheeman2912/spring-petclinic --certificate-github-workflow-trigger=push --key cosign.pub --rekor-url https://85c8-52-172-140-64.ngrok-free.app ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} | jq -r .payload | base64 --decode | jq . || { echo "Error: Provenance Attestation  failed"; exit 1; }
+        cosign verify-attestation --certificate-github-workflow-name=.github/workflows/cicd.yml@refs/heads/testing --certificate-github-workflow-ref=refs/heads/testing --certificate-github-workflow-repository=https://github.com/dheeman2912/spring-petclinic --certificate-github-workflow-trigger=push --key cosign.pub --rekor-public-key rekor.pub --rekor-url https://85c8-52-172-140-64.ngrok-free.app ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} | jq -r .payload | base64 --decode | jq . || { echo "Error: Provenance Attestation  failed"; exit 1; }
        shell: bash
 
   Image-Deploy:
