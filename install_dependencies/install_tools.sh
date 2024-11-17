@@ -29,7 +29,7 @@ apt-get install -y gh jq
 
 # Install Cosign
 echo "Installing Cosign..."
-curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.2.3/cosign-linux-amd64
+curl -sSL -o /usr/local/bin/cosign https://github.com/sigstore/cosign/releases/download/v2.3.0/cosign-linux-amd64
 chmod +x /usr/local/bin/cosign
 
 # Clean up faulty Azure CLI sources
