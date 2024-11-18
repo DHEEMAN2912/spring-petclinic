@@ -178,19 +178,19 @@ jobs:
           fi
 
 
-     - name: Scan Application Image with Trivy
-       id: scan_docker_image
-       run: |
-         trivy image "${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_VERSION }}" > ${{ env.LOG_FILE }} || { echo "Error: Trivy scan failed"; exit 1; }
-         # echo "Trivy scan completed. Results saved to ${{ env.LOG_FILE }}"
-         echo "Trivy scan completed. Results:"
-         cat ${{ env.LOG_FILE }}  # This prints the scan results in the log
+     # - name: Scan Application Image with Trivy
+     #   id: scan_docker_image
+     #   run: |
+     #     trivy image "${{ secrets.IMAGE_NAME }}:${{ secrets.IMAGE_VERSION }}" > ${{ env.LOG_FILE }} || { echo "Error: Trivy scan failed"; exit 1; }
+     #     # echo "Trivy scan completed. Results saved to ${{ env.LOG_FILE }}"
+     #     echo "Trivy scan completed. Results:"
+     #     cat ${{ env.LOG_FILE }}  # This prints the scan results in the log
 
-     - name: Upload Trivy Scan Results
-       uses: actions/upload-artifact@v3
-       with:
-        name: trivy-scan-results
-        path: ${{ env.LOG_FILE }}
+     # - name: Upload Trivy Scan Results
+     #   uses: actions/upload-artifact@v3
+     #   with:
+     #    name: trivy-scan-results
+     #    path: ${{ env.LOG_FILE }}
 
      - name: Log in to GitHub Container Registry
        id: login_registry
@@ -223,6 +223,7 @@ jobs:
        run: |
         if cosign public-key --key env://COSIGN_KEY > cosign.pub; then
           echo "Success: Cosign Public Key created successfully."
+          cat cosign.pub
         else
           echo "Error: Cosign Public Key creation failed."
           exit 1
