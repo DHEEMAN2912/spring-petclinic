@@ -303,7 +303,7 @@ jobs:
      - name: Attestation and Signing the Image with Provenance
        run: |
         cosign sign --key env://COSIGN_KEY ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes
-        cosign attest --key env://COSIGN_KEY --predicate output.json  ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes || { echo "Error: Failed to attest predicate with the image"; exit 1; }
+        cosign attest --replace --key env://COSIGN_KEY --predicate output.json  ${{ secrets.IMAGE_NAME }}@${{ env.IMAGE_SHA }} --yes || { echo "Error: Failed to attest predicate with the image"; exit 1; }
        shell: bash
        env:
         COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
