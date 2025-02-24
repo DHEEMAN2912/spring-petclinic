@@ -1,39 +1,13 @@
-name: Collect Pipeline Metadata
+name: DevSecOps Pipeline
 
 on:
   push:
     branches:
       - Parameter
   pull_request:
+  workflow_dispatch:
+    
 
 jobs:
   collect-metadata:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Collect and Display Pipeline Metadata
-        run: |
-          echo "Collecting GitHub Actions Pipeline Metadata..."
-
-          # GitHub Predefined Variables
-          echo "Git URL: ${{ github.repositoryUrl }}"
-          echo "Git Branch: ${GITHUB_REF#refs/heads/}"
-          echo "Git Commit ID: ${{ github.sha }}"
-          echo "Git Author Name: ${{ github.actor }}"
-
-          # Capture Pull Request ID with error handling
-          if [[ "${{ github.event.pull_request.number }}" != "" ]]; then
-              pr_id=${{ github.event.pull_request.number }}
-              echo "Captured Pull Request ID: $pr_id"
-          else
-              pr_id="Not Applicable"
-              echo "Pull Request ID is not available."
-          fi
-
-          echo "Runner Name: ${{ runner.name }}"
-          echo "Run ID: ${{ github.run_id }}"
-          echo "Pipeline URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-          echo "Metadata collection completed."
+    uses: Reusable-Pipelines/.github/workflows/collect-metadata.yaml@main
