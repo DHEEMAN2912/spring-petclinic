@@ -1,14 +1,12 @@
 name: DevSecOps Pipeline
 
-
 on:
   push:
     branches:
       - Parameter
   pull_request:
   workflow_dispatch:
-    
 
 jobs:
   collect-metadata:
-    uses: Reusable-Pipelines/.github/workflows/collect-metadata.yaml@main
+    uses: DHEEMAN2912/Reusable-Pipelines/.github/workflows/collect-metadata.yaml@main
