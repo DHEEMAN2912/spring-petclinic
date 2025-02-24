@@ -90,3 +90,15 @@ jobs:
   collect-metadata:
     needs: azure-login
     uses: DHEEMAN2912/Reusable-Pipelines/.github/workflows/collect-metadata.yaml@main
+
+
+  fetch-secret:
+    needs: collect-metadata
+    uses: DHEEMAN2912/Reusable-Pipelines/.github/workflows/Azure_Key_Vault.yaml@main
+    # secrets:
+    #    azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+    with:
+      key_vault_name: ${{ inputs.key_vault_name }}
+      azure_resource_group: ${{ inputs.azure_resource_group }}
+      secrets_filter: ${{ inputs.secrets_filter }}
+
