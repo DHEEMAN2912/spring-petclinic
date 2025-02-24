@@ -36,5 +36,3 @@ jobs:
       key_vault_name: ${{ inputs.key_vault_name }}
       azure_resource_group: ${{ inputs.azure_resource_group }}
       secrets_filter: ${{ inputs.secrets_filter }}
-    secrets:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
