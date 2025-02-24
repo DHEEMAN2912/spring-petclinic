@@ -34,7 +34,7 @@ jobs:
     needs: collect-metadata
     uses: DHEEMAN2912/Reusable-Pipelines/.github/workflows/Azure_Key_Vault.yaml@main
     with:
-      azure_subscription: ${{ inputs.azure_credentials }}
+      azure_credentials: ${{ inputs.azure_credentials }}
       key_vault_name: ${{ inputs.key_vault_name }}
       azure_resource_group: ${{ inputs.azure_resource_group }}
       secrets_filter: ${{ inputs.secrets_filter }}
